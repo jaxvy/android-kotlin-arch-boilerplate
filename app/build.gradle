@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion rootProject.buildToolsVersion
+    defaultConfig {
+        applicationId "me.jaxvy.kotlinboilerplate"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "0.0.1"
+        vectorDrawables.useSupportLibrary = true
+        buildConfigField "String", "BASE_SERVICE_URL", '"https://{YOUR_FIREBASE_ID}.firebaseio.com/"'
+    }
+
+    kapt {
+        generateStubs = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    compile "com.android.support:design:$supportLibVersion"
+
+    compile "android.arch.lifecycle:runtime:$archLifecycleVersion"
+    compile "android.arch.lifecycle:extensions:$archLifecycleVersion"
+    compile "android.arch.persistence.room:runtime:$archRoomVersion"
+    kapt "android.arch.persistence.room:compiler:$archRoomVersion"
+
+    compile "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    compile "com.google.firebase:firebase-auth:$firebaseVersion"
+
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
+    compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+}
+
+// This needs to be on the last line
+apply plugin: 'com.google.gms.google-services'
