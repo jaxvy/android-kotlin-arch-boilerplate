@@ -1,15 +1,15 @@
 package me.jaxvy.kotlinboilerplate.ui.home
 
 import android.app.AlertDialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_home.*
 import me.jaxvy.kotlinboilerplate.R
 import me.jaxvy.kotlinboilerplate.persistence.entity.Item
@@ -33,8 +33,7 @@ class HomeActivity : AuthenticatedActivity(), HomeActivityCallback {
         setupToolbar(toolbar, R.string.HomeActivity_toolbar)
 
         viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        viewModel.items.observe(this, Observer<List<Item>> {
-            items ->
+        viewModel.items.observe(this, Observer<List<Item>> { items ->
             adapter.setItems(items!!)
         })
         viewModel.registerCreateItemHandlers(
@@ -43,8 +42,7 @@ class HomeActivity : AuthenticatedActivity(), HomeActivityCallback {
 
         newItemFloatingActionButton.setOnClickListener { showCreateItemFragment() }
 
-        adapter = ItemAdapter {
-            item ->
+        adapter = ItemAdapter { item ->
             Log.d("Item clicked: ", "${item.title} ${item.description}")
         }
         itemRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -53,14 +51,6 @@ class HomeActivity : AuthenticatedActivity(), HomeActivityCallback {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean = consume {
-        /**
-         * I need to re-setup the toolbar here otherwise if the orientation changes during
-         * item creation, HomeActivity's toolbar does not show the menu.
-         * I suspect this is being caused by the fact that currently LifecycleActivity is
-         * extended from FragmentActivity. Once AppCompatActivity supports lifecycle, it will
-         * hopefully fix this problem
-         */
-        setupToolbar(toolbar, R.string.HomeActivity_toolbar)
         menuInflater.inflate(R.menu.menu_home, menu)
     }
 

@@ -1,6 +1,6 @@
 package me.jaxvy.kotlinboilerplate.ui.common
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import me.jaxvy.kotlinboilerplate.KotlinBoilerplateApplication
 import me.jaxvy.kotlinboilerplate.api.Api

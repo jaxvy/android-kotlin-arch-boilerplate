@@ -1,7 +1,7 @@
 package me.jaxvy.kotlinboilerplate.ui.login
 
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_login.*
 import me.jaxvy.kotlinboilerplate.R

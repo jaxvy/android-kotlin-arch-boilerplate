@@ -16,23 +16,21 @@ class LoginViewModel : BaseViewModel() {
     fun login(email: String, password: String, onSuccess: () -> Unit) {
         isLoggingIn = true
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener({
-                    task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         fetchAuthToken(onSuccess)
                     } else {
                         isLoggingIn = false
                         onLoginError?.invoke(task.exception)
                     }
-                })
+                }
     }
 
     private fun fetchAuthToken(onSuccess: () -> Unit) {
-        firebaseAuth.currentUser?.getToken(true)
-                ?.addOnCompleteListener({
-                    task ->
+        firebaseAuth.currentUser?.getIdToken(true)
+                ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val authToken = task.result.getToken()
+                        val authToken = task.result?.token
                         sharedPrefs.setAuthToken(authToken!!)
                         isLoggingIn = false
                         onSuccess.invoke()
@@ -40,7 +38,7 @@ class LoginViewModel : BaseViewModel() {
                         isLoggingIn = false
                         onLoginError?.invoke(task.exception)
                     }
-                })
+                }
     }
 
     override fun onCleared() {

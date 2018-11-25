@@ -1,6 +1,6 @@
 package me.jaxvy.kotlinboilerplate.ui.home
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import me.jaxvy.kotlinboilerplate.api.request.ItemCreateRequest
 import me.jaxvy.kotlinboilerplate.api.request.ItemListRequest
 import me.jaxvy.kotlinboilerplate.persistence.entity.Item
