@@ -11,7 +11,7 @@ import me.jaxvy.kotlinboilerplate.ui.home.HomeActivityCallback
 class CreateItemFragment : BaseFragment() {
 
     companion object {
-        val TAG = "CreateItemFragment"
+        const val TAG = "CreateItemFragment"
     }
 
     private lateinit var activityCallback: HomeActivityCallback
@@ -30,7 +30,7 @@ class CreateItemFragment : BaseFragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return inflater.inflate(R.layout.fragment_create_item, container, false)
     }
 
@@ -42,7 +42,7 @@ class CreateItemFragment : BaseFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // I need to re-setup the toolbar here to that it will override the toolbar update
+        // I need to re-setup the toolbar here so that it will override the toolbar update
         // in HomeActivity
         setupToolbar(toolbar, R.string.CreateItemFragment_toolbar, true)
         menu.clear()

@@ -45,7 +45,6 @@ class LoginViewModel : BaseViewModel() {
                 }
     }
 
-    //TODO: Move this and others to onDestroy()
     override fun onCleared() {
         super.onCleared()
         onLoginSuccess = null

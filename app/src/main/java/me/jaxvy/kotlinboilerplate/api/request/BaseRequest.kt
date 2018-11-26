@@ -1,38 +1,13 @@
 package me.jaxvy.kotlinboilerplate.api.request
 
-import io.reactivex.Observable
+import io.reactivex.Single
 
-abstract class BaseRequest<T> : InjectionBase {
+abstract class BaseRequest<T>(
+        private var onSuccess: (() -> Unit)? = null,
+        private var onError: ((Throwable) -> Unit)? = null
+) : InjectionBase() {
 
-    var onSuccess: (() -> Unit)? = null
-    var onError: ((Throwable) -> Unit)? = null
-    var tag: String? = null
-
-    constructor(onSuccess: (() -> Unit)?,
-                onError: ((Throwable) -> Unit)?) : super() {
-        this.onSuccess = onSuccess
-        this.onError = onError
-    }
-
-    constructor(onSuccess: (() -> Unit)?,
-                onError: ((Throwable) -> Unit)?,
-                tag: String?) : super() {
-        this.onSuccess = onSuccess
-        this.onError = onError
-        this.tag = tag
-    }
-
-    constructor(onSuccess: (() -> Unit)?) : super() {
-        this.onSuccess = onSuccess
-    }
-
-    constructor(onError: ((Throwable) -> Unit)?) : super() {
-        this.onError = onError
-    }
-
-    constructor() : super()
-
-    abstract fun getObservable(): Observable<T>
+    abstract fun getSingle(): Single<T>
 
     fun onComplete() {
         onSuccess?.invoke()
@@ -46,5 +21,5 @@ abstract class BaseRequest<T> : InjectionBase {
      * Database operations (for caching incoming response data) is performed on the IO thread. This
      * method is the callback to implement db operation on Room
      */
-    abstract fun runOnBackgroundThread(t: T)
+    open fun databaseOperationCallback(t: T) {}
 }

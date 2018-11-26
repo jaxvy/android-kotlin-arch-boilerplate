@@ -5,21 +5,19 @@ import me.jaxvy.kotlinboilerplate.persistence.SharedPrefs
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
-class NetworkSettings(val mSharedPrefs: SharedPrefs) {
+class NetworkSettings(private val sharedPrefs: SharedPrefs) {
 
     fun getInterceptors(): ArrayList<Interceptor> {
         val interceptors = ArrayList<Interceptor>()
         if (BuildConfig.DEBUG) {
             interceptors.add(getLoggingInterceptor())
         }
-        interceptors.add(Interceptor {
-            chain ->
+        interceptors.add(Interceptor { chain ->
             var request = chain.request()
-            val authToken = mSharedPrefs.getAuthToken()
-            if (authToken != null) {
+            sharedPrefs.getAuthToken()?.run {
                 val url = request.url()
                         .newBuilder()
-                        .addQueryParameter("auth", authToken)
+                        .addQueryParameter("auth", this)
                         .build()
                 request = request.newBuilder().url(url).build()
             }
@@ -29,7 +27,7 @@ class NetworkSettings(val mSharedPrefs: SharedPrefs) {
         return interceptors
     }
 
-    fun getLoggingInterceptor(): Interceptor {
+    private fun getLoggingInterceptor(): Interceptor {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return httpLoggingInterceptor

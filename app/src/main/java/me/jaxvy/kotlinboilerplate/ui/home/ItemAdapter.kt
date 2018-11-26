@@ -8,28 +8,33 @@ import me.jaxvy.kotlinboilerplate.R
 import me.jaxvy.kotlinboilerplate.persistence.entity.Item
 import me.jaxvy.kotlinboilerplate.utils.inflate
 
-class ItemAdapter(private val onClickListener: (Item) -> Unit) :
-        RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class ItemAdapter(
+        private val onClickListener: (Item) -> Unit
+) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
-    private var itemList: List<Item>? = null
+    private var itemList: List<Item> = emptyList()
 
     fun setItems(newItemList: List<Item>) {
         itemList = newItemList;
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ItemAdapter.ItemViewHolder {
+    override fun onCreateViewHolder(
+            viewGroup: ViewGroup,
+            viewType: Int
+    ): ItemAdapter.ItemViewHolder {
         return ItemViewHolder(viewGroup.inflate(R.layout.adapter_item), onClickListener)
     }
 
     override fun onBindViewHolder(viewHolder: ItemAdapter.ItemViewHolder, position: Int) {
-        viewHolder.bind(itemList!![position])
+        viewHolder.bind(itemList[position])
     }
 
-    override fun getItemCount() = itemList?.size ?: 0
+    override fun getItemCount() = itemList.size
 
-    class ItemViewHolder(itemView: View, val onClickListener: (Item) -> Unit) :
-            RecyclerView.ViewHolder(itemView) {
+    class ItemViewHolder(
+            itemView: View, val onClickListener: (Item) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Item) = with(itemView) {
             title.text = item.title

@@ -26,7 +26,10 @@ fun ViewGroup.inflate(@LayoutRes layoutId: Int, attachToRoot: Boolean = false): 
     return LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 }
 
-inline fun AlertDialog.Builder.pop(@StringRes title: Int, message: String?, func: AlertDialog.Builder.() -> Unit) {
+inline fun AlertDialog.Builder.pop(
+        @StringRes title: Int,
+        message: String?, func: AlertDialog.Builder.() -> Unit
+) {
     setTitle(title)
     setMessage(message)
     func()
@@ -68,7 +71,9 @@ inline fun <reified T : Activity> Context.startActivity(vararg inputs: Pair<Stri
                 value.isArrayOf<CharSequence>() -> intent.putExtra(it.first, value)
                 value.isArrayOf<String>() -> intent.putExtra(it.first, value)
                 value.isArrayOf<Parcelable>() -> intent.putExtra(it.first, value)
-                else -> throw Exception("Intent extra ${it.first} has wrong type ${value.javaClass.name}")
+                else -> throw Exception(
+                        "Intent extra ${it.first} has wrong type ${value.javaClass.name}"
+                )
             }
             is IntArray -> intent.putExtra(it.first, value)
             is LongArray -> intent.putExtra(it.first, value)
@@ -77,7 +82,9 @@ inline fun <reified T : Activity> Context.startActivity(vararg inputs: Pair<Stri
             is CharArray -> intent.putExtra(it.first, value)
             is ShortArray -> intent.putExtra(it.first, value)
             is BooleanArray -> intent.putExtra(it.first, value)
-            else -> throw Exception("Intent extra ${it.first} has wrong type ${value.javaClass.name}")
+            else -> throw Exception(
+                    "Intent extra ${it.first} has wrong type ${value.javaClass.name}"
+            )
         }
     }
     startActivity(intent)
