@@ -11,12 +11,9 @@ import me.jaxvy.kotlinboilerplate.api.request.BaseRequest
 import me.jaxvy.kotlinboilerplate.persistence.SharedPrefs
 import java.util.*
 
+private const val AUTH_TOKEN_REFRESH_TIMEOUT_IN_MS = (55 * 60 * 1000).toLong()
 
 class ApiManager(val context: Context, val sharedPrefs: SharedPrefs) {
-
-    companion object {
-        private val AUTH_TOKEN_REFRESH_TIMEOUT_IN_MS = (55 * 60 * 1000).toLong()
-    }
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -38,28 +35,31 @@ class ApiManager(val context: Context, val sharedPrefs: SharedPrefs) {
     private fun <T> updateTokenAndExecute(baseBaseRequest: BaseRequest<T>) {
         Log.d("ApiManager", "Firebase auth token expired, updating...")
         val currentUser = FirebaseAuth.getInstance().currentUser
-        currentUser?.getToken(true)
+        currentUser?.getIdToken(true)
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("ApiManager", "Firebase auth token updated")
-                        val authToken = task.result.token
-                        sharedPrefs.setAuthToken(authToken!!)
+                        task.result?.token?.run { sharedPrefs.setAuthToken(this) }
                         execute(baseBaseRequest)
                     } else {
                         Log.d("ApiManager", "Firebase update auth token failed")
                     }
                 }
-                ?.addOnFailureListener { e -> Log.e("ApiManager", "Firebase update auth failed", e) } ?: Log.d("ApiManager", "Firebase update auth token failed, user not available")
+                ?.addOnFailureListener { e ->
+                    Log.e("ApiManager", "Firebase update auth failed", e)
+                }
+                ?: Log.d("ApiManager", "Firebase update auth token failed, user not available")
     }
 
-    private fun <T> execute(baseBaseRequest: BaseRequest<T>) {
-        val subscription = baseBaseRequest.getObservable()
-                .doOnNext { item -> baseBaseRequest.runOnBackgroundThread(item) }
+    private fun <T> execute(request: BaseRequest<T>) {
+        val subscription = request.getSingle()
+                .doOnSuccess { item -> request.databaseOperationCallback(item) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ },
-                        { throwable -> baseBaseRequest.onFail(throwable) },
-                        { baseBaseRequest.onComplete() })
+                .subscribe(
+                        { request.onComplete() },
+                        { throwable -> request.onFail(throwable) }
+                )
         compositeDisposable.add(subscription)
     }
 }

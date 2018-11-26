@@ -5,45 +5,49 @@ import me.jaxvy.kotlinboilerplate.ui.common.BaseViewModel
 
 class LoginViewModel : BaseViewModel() {
 
-    var isLoggingIn = false
+    internal var isLoggingIn = false
 
+    private var onLoginSuccess: (() -> Unit)? = null
     private var onLoginError: ((Exception?) -> (Unit))? = null
 
-    fun registerLoginErrorHandler(onError: ((Exception?) -> (Unit))?) {
-        onLoginError = onError
+    fun registerLoginHandlers(
+            onLoginSuccess: (() -> Unit)?,
+            onLoginError: ((Exception?) -> (Unit))?
+    ) {
+        this.onLoginSuccess = onLoginSuccess
+        this.onLoginError = onLoginError
     }
 
-    fun login(email: String, password: String, onSuccess: () -> Unit) {
+    fun login(email: String, password: String) {
         isLoggingIn = true
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener({
-                    task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        fetchAuthToken(onSuccess)
+                        fetchAuthToken()
                     } else {
                         isLoggingIn = false
                         onLoginError?.invoke(task.exception)
                     }
-                })
+                }
     }
 
-    private fun fetchAuthToken(onSuccess: () -> Unit) {
-        firebaseAuth.currentUser?.getToken(true)
-                ?.addOnCompleteListener({
-                    task ->
+    private fun fetchAuthToken() {
+        firebaseAuth.currentUser?.getIdToken(true)
+                ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val authToken = task.result.getToken()
-                        sharedPrefs.setAuthToken(authToken!!)
+                        task.result?.token?.run { sharedPrefs.setAuthToken(this) }
                         isLoggingIn = false
-                        onSuccess.invoke()
+                        onLoginSuccess?.invoke()
                     } else {
                         isLoggingIn = false
                         onLoginError?.invoke(task.exception)
                     }
-                })
+                }
     }
 
     override fun onCleared() {
+        super.onCleared()
+        onLoginSuccess = null
         onLoginError = null
     }
 }

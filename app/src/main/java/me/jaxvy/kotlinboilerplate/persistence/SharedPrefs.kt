@@ -6,16 +6,15 @@ import android.util.Log
 import me.jaxvy.kotlinboilerplate.utils.edit
 import java.util.*
 
+private const val AUTH_TOKEN = "auth_token"
+private const val AUTH_TOKEN_TIME_CREATE = "auth_token_time_create"
 
 class SharedPrefs(context: Context) {
-    private val AUTH_TOKEN = "auth_token"
-    private val AUTH_TOKEN_TIME_CREATE = "auth_token_time_create"
 
-    val sharedPreferences: SharedPreferences
-
-    init {
-        sharedPreferences = context.getSharedPreferences("shared_prefs", Context.MODE_PRIVATE)
-    }
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
+            "shared_prefs",
+            Context.MODE_PRIVATE
+    )
 
     fun setAuthToken(authToken: String) {
         Log.d("AUTH_TOKEN", authToken)
@@ -25,7 +24,7 @@ class SharedPrefs(context: Context) {
         }
     }
 
-    fun getAuthToken(): String {
+    fun getAuthToken(): String? {
         return sharedPreferences.getString(AUTH_TOKEN, null)
     }
 

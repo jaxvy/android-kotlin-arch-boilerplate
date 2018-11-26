@@ -1,12 +1,12 @@
 package me.jaxvy.kotlinboilerplate.ui.common
 
-import android.arch.lifecycle.LifecycleActivity
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.widget.Toolbar
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 
-abstract class BaseActivity : LifecycleActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     protected lateinit var firebaseAuth: FirebaseAuth
 
@@ -16,7 +16,7 @@ abstract class BaseActivity : LifecycleActivity() {
     }
 
     protected fun setupToolbar(toolbar: Toolbar, @StringRes title: Int) {
-        setActionBar(toolbar)
-        actionBar.setTitle(title)
+        setSupportActionBar(toolbar)
+        actionBar?.setTitle(title)
     }
 }

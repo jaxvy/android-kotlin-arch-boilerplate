@@ -1,9 +1,9 @@
 package me.jaxvy.kotlinboilerplate.ui.common
 
-import android.content.Intent
 import android.os.Bundle
 import me.jaxvy.kotlinboilerplate.ui.login.LoginActivity
 import me.jaxvy.kotlinboilerplate.utils.isUserLoggedIn
+import me.jaxvy.kotlinboilerplate.utils.startActivity
 
 abstract class AuthenticatedActivity : BaseActivity() {
 
@@ -11,8 +11,7 @@ abstract class AuthenticatedActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         if (!firebaseAuth.isUserLoggedIn()) {
-            var intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            startActivity<LoginActivity>()
             finish()
         }
     }
