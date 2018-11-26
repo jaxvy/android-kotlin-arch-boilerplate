@@ -38,18 +38,19 @@ class ApiManager(val context: Context, val sharedPrefs: SharedPrefs) {
     private fun <T> updateTokenAndExecute(baseBaseRequest: BaseRequest<T>) {
         Log.d("ApiManager", "Firebase auth token expired, updating...")
         val currentUser = FirebaseAuth.getInstance().currentUser
-        currentUser?.getToken(true)
+        currentUser?.getIdToken(true)
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("ApiManager", "Firebase auth token updated")
-                        val authToken = task.result.token
+                        val authToken = task.result?.token
                         sharedPrefs.setAuthToken(authToken!!)
                         execute(baseBaseRequest)
                     } else {
                         Log.d("ApiManager", "Firebase update auth token failed")
                     }
                 }
-                ?.addOnFailureListener { e -> Log.e("ApiManager", "Firebase update auth failed", e) } ?: Log.d("ApiManager", "Firebase update auth token failed, user not available")
+                ?.addOnFailureListener { e -> Log.e("ApiManager", "Firebase update auth failed", e) }
+                ?: Log.d("ApiManager", "Firebase update auth token failed, user not available")
     }
 
     private fun <T> execute(baseBaseRequest: BaseRequest<T>) {

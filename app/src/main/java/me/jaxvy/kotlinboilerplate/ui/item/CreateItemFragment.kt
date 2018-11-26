@@ -14,7 +14,7 @@ class CreateItemFragment : BaseFragment() {
         val TAG = "CreateItemFragment"
     }
 
-    lateinit private var activityCallback: HomeActivityCallback
+    private lateinit var activityCallback: HomeActivityCallback
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -26,8 +26,12 @@ class CreateItemFragment : BaseFragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_create_item, container, false)
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_create_item, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

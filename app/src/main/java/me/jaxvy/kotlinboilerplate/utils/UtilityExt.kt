@@ -1,20 +1,19 @@
 package me.jaxvy.kotlinboilerplate.utils
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.LayoutRes
-import android.app.AlertDialog
-import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
-
 import java.io.Serializable
 
 inline fun SharedPreferences.edit(func: SharedPreferences.Editor.() -> Unit) {
@@ -35,22 +34,20 @@ inline fun AlertDialog.Builder.pop(@StringRes title: Int, message: String?, func
 }
 
 fun AlertDialog.Builder.dismissOnOk() {
-    setPositiveButton("Ok") {
-        dialog, _ ->
+    setPositiveButton("Ok") { dialog, _ ->
         dialog.dismiss()
     }
 }
 
 fun AlertDialog.Builder.dismissOnOk(onClickListener: () -> (Unit)) {
-    setPositiveButton("Ok") {
-        dialogInterface, _ ->
+    setPositiveButton("Ok") { dialogInterface, _ ->
         onClickListener()
         dialogInterface.dismiss()
     }
 }
 
 inline fun <reified T : Activity> Context.startActivity(vararg inputs: Pair<String, Any?>) {
-    var intent = Intent(this, T::class.java)
+    val intent = Intent(this, T::class.java)
     inputs.forEach {
         val value = it.second
         when (value) {

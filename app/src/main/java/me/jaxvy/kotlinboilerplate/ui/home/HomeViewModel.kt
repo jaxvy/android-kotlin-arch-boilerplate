@@ -1,6 +1,6 @@
 package me.jaxvy.kotlinboilerplate.ui.home
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import me.jaxvy.kotlinboilerplate.api.request.ItemCreateRequest
 import me.jaxvy.kotlinboilerplate.api.request.ItemListRequest
 import me.jaxvy.kotlinboilerplate.persistence.entity.Item
@@ -9,14 +9,11 @@ import me.jaxvy.kotlinboilerplate.ui.common.BaseViewModel
 class HomeViewModel : BaseViewModel() {
 
     internal var items: LiveData<List<Item>>
-
     internal var isCreatingItem = false
+
     private var onCreateItemSuccess: (() -> (Unit))? = null
     private var onCreateItemError: ((Throwable) -> Unit)? = null
 
-    /**
-     * This constructor is called once during orientation changes (because of it's a ViewModel dahh)
-     */
     init {
         fetchItems()
         items = db.itemDao().getAll()
@@ -27,7 +24,7 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun logout() {
-        dbManager.runOnBackgroundThread({ db.itemDao().deleteAllItems() })
+        dbManager.runOnBackgroundThread(action = { db.itemDao().deleteAllItems() })
         firebaseAuth.signOut();
         sharedPrefs.clearAuthToken();
     }
@@ -45,16 +42,20 @@ class HomeViewModel : BaseViewModel() {
      */
     fun createNewItem(title: String, description: String) {
         isCreatingItem = true
-        apiManager.call(ItemCreateRequest(title, description,
-                onSuccess = {
-                    isCreatingItem = false
-                    onCreateItemSuccess?.invoke()
-                },
-                onError = {
-                    throwable ->
-                    isCreatingItem = false
-                    onCreateItemError?.invoke(throwable)
-                }))
+        apiManager.call(
+                ItemCreateRequest(
+                        title,
+                        description,
+                        onSuccess = {
+                            isCreatingItem = false
+                            onCreateItemSuccess?.invoke()
+                        },
+                        onError = { throwable ->
+                            isCreatingItem = false
+                            onCreateItemError?.invoke(throwable)
+                        }
+                )
+        )
     }
 
     override fun onCleared() {

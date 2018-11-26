@@ -1,13 +1,14 @@
 package me.jaxvy.kotlinboilerplate.ui.common
 
-import android.arch.lifecycle.LifecycleFragment
 import android.content.Context
-import android.support.annotation.StringRes
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toolbar
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import me.jaxvy.kotlinboilerplate.utils.setBackButtonAction
 
-abstract class BaseFragment : LifecycleFragment() {
+abstract class BaseFragment : Fragment() {
 
     protected fun hideKeyboard() {
         val content = view
@@ -29,10 +30,12 @@ abstract class BaseFragment : LifecycleFragment() {
     }
 
     protected fun setupToolbar(toolbar: Toolbar, @StringRes title: Int, showBackArrow: Boolean) {
-        activity.setActionBar(toolbar)
-        toolbar.setTitle(title)
-        activity.actionBar.setDisplayHomeAsUpEnabled(showBackArrow)
-        activity.actionBar.setDisplayShowHomeEnabled(showBackArrow)
-        toolbar.setBackButtonAction(showBackArrow, onActive = { activity.onBackPressed() })
+        (activity as? AppCompatActivity)?.run {
+            setSupportActionBar(toolbar)
+            toolbar.setTitle(title)
+            actionBar?.setDisplayHomeAsUpEnabled(showBackArrow)
+            actionBar?.setDisplayShowHomeEnabled(showBackArrow)
+            toolbar.setBackButtonAction(showBackArrow, onActive = { activity?.onBackPressed() })
+        }
     }
 }

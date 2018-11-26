@@ -1,7 +1,7 @@
 package me.jaxvy.kotlinboilerplate.persistence
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import me.jaxvy.kotlinboilerplate.persistence.dao.ItemDao
 import me.jaxvy.kotlinboilerplate.persistence.entity.Item
 
